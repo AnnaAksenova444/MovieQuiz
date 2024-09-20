@@ -1,5 +1,5 @@
-import Foundation
+import UIKit
 
-protocol AlertPresenterDelegate: AnyObject {
+protocol AlertPresenterDelegate: UIViewController {
     func show (quiz: AlertModel)
 }

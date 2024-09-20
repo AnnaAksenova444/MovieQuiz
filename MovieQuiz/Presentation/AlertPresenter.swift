@@ -1,11 +1,11 @@
 import UIKit
 
-class AlertPresenter: AlertPresenterProtocol {
+final class AlertPresenter: AlertPresenterProtocol {
     
     weak var delegate: AlertPresenterDelegate?
     
     func showAlert (quiz result: AlertModel) {
-        guard let view = delegate as? UIViewController else {return}
+        guard let view = delegate else {return}
         
         let alert = UIAlertController(
             title: result.title,
@@ -14,8 +14,7 @@ class AlertPresenter: AlertPresenterProtocol {
         
         let action = UIAlertAction(
             title: result.buttonText,
-            style: .default) {[weak self] _ in
-                guard self != nil else {return}
+            style: .default) { _ in
                 result.completion()
             }
         alert.addAction(action)

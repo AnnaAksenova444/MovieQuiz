@@ -1,6 +1,6 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, AlertPresenterDelegate {
+final class MovieQuizViewController: UIViewController {
     // MARK: - Lifecycle
     
     @IBOutlet weak private var imageView: UIImageView!
@@ -30,28 +30,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         self.questionFactory = questionFactory
         
         questionFactory.requestNextQuestion()
-    }
-    // MARK: - QuestionFactoryDelegate
-    
-    func didReceiveNextQuestion(question: QuizQuestion?) {
-        guard let question else {
-            return
-        }
-        currentQuestion = question
-        let viewModel = convert(model: question)
-        
-        DispatchQueue.main.async { [weak self] in
-            self?.show(quiz: viewModel)
-        }
-    }
-    // MARK: - AlertPresenterDelegate
-    
-    func show (quiz: AlertModel) {
-        let alert = AlertPresenter()
-        alert.delegate = self
-        self.alert = alert
-        
-        alert.showAlert(quiz: quiz)
     }
     // MARK: - Private functions
     
@@ -149,4 +127,29 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         showAnswerResult(isCorrect: giveAnswer == currentQuestion.correctAnswer)
     }
 }
+    //MARK: - QuestionFactoryDelegate
 
+extension MovieQuizViewController: QuestionFactoryDelegate{
+    func didReceiveNextQuestion(question: QuizQuestion?) {
+        guard let question else {
+            return
+        }
+        currentQuestion = question
+        let viewModel = convert(model: question)
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.show(quiz: viewModel)
+        }
+    }
+}
+    // MARK: - AlertPresenterDelegate
+
+extension MovieQuizViewController:AlertPresenterDelegate {
+    func show(quiz: AlertModel) {
+        let alert = AlertPresenter()
+        alert.delegate = self
+        self.alert = alert
+        
+        alert.showAlert(quiz: quiz)
+    }
+}
