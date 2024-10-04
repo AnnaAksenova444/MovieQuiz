@@ -23,7 +23,6 @@
                 <viewController id="BYZ-38-t0r" customClass="MovieQuizViewController" customModule="MovieQuiz" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="3uY-uf-vgY">
                                 <rect key="frame" x="20" y="58" width="374" height="804"/>
@@ -104,13 +103,18 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="l9K-h2-tXR">
+                                <rect key="frame" x="197" y="438" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" name="YP Black"/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="3uY-uf-vgY" secondAttribute="bottom" id="31p-CX-uAK"/>
+                            <constraint firstItem="l9K-h2-tXR" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="3QO-ve-n3A"/>
                             <constraint firstItem="3uY-uf-vgY" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="JDk-Ou-cLM"/>
                             <constraint firstItem="3uY-uf-vgY" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="K7e-zv-pxV"/>
+                            <constraint firstItem="l9K-h2-tXR" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="hsD-nJ-WZ0"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="3uY-uf-vgY" secondAttribute="trailing" constant="20" id="sIW-1n-6fT"/>
                         </constraints>
                         <userDefinedRuntimeAttributes>
@@ -120,6 +124,7 @@
                         </userDefinedRuntimeAttributes>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="l9K-h2-tXR" id="lDy-9N-zhh"/>
                         <outlet property="counterLabel" destination="4EB-7G-kZt" id="Mnf-Ri-ynI"/>
                         <outlet property="imageView" destination="uhI-1j-scK" id="Xe3-FM-eBY"/>
                         <outlet property="noButton" destination="nXy-yW-5uu" id="ozJ-Pg-zqw"/>
