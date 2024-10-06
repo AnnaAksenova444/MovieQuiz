@@ -17,7 +17,7 @@ final class MovieQuizViewController: UIViewController {
     
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
-    private var alert:AlertPresenterProtocol? = AlertPresenter()
+    private var alert:AlertPresenterProtocol = AlertPresenter()
     private var statisticService: StatisticServiceProtocol = StatisticService()
     
     override func viewDidLoad() {
@@ -27,15 +27,18 @@ final class MovieQuizViewController: UIViewController {
         imageView.layer.cornerRadius = 20
         
         /*let questionFactory = QuestionFactory()
-        questionFactory.delegate = self
+         questionFactory.delegate = self
+         self.questionFactory = questionFactory
+         
+         questionFactory.requestNextQuestion()
+         */
+        
+        let questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
         self.questionFactory = questionFactory
         
-        questionFactory.requestNextQuestion()
-        */
-        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
-        
         showLoadingIndicator()
-        questionFactory?.loadData()
+        questionFactory.loadData()
+        
     }
     // MARK: - Private functions
     
@@ -121,7 +124,7 @@ final class MovieQuizViewController: UIViewController {
     
     private func showNetworkError(message: String) {
         hideLoadingIndicator()
-       
+        
         let viewModel = AlertModel(
             title: "Ошибка",
             message: message,
@@ -130,10 +133,10 @@ final class MovieQuizViewController: UIViewController {
                 guard let self else {return}
                 self.currentQuestionIndex = 0
                 self.correctAnswers = 0
-                self.questionFactory?.requestNextQuestion()
+                self.questionFactory?.loadData()
             }
-            )
-        alert?.showAlert(quiz: viewModel)
+        )
+        show(quiz: viewModel)
     }
     // MARK: - Actions
     
@@ -159,7 +162,7 @@ final class MovieQuizViewController: UIViewController {
         showAnswerResult(isCorrect: giveAnswer == currentQuestion.correctAnswer)
     }
 }
-    //MARK: - QuestionFactoryDelegate
+//MARK: - QuestionFactoryDelegate
 
 extension MovieQuizViewController: QuestionFactoryDelegate{
     func didReceiveNextQuestion(question: QuizQuestion?) {
@@ -181,7 +184,7 @@ extension MovieQuizViewController: QuestionFactoryDelegate{
         showNetworkError(message: error.localizedDescription)
     }
 }
-    // MARK: - AlertPresenterDelegate
+// MARK: - AlertPresenterDelegate
 
 extension MovieQuizViewController:AlertPresenterDelegate {
     func show(quiz: AlertModel) {
