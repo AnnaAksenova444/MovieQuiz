@@ -26,19 +26,11 @@ final class MovieQuizViewController: UIViewController {
         yesButton.layer.cornerRadius = 15
         imageView.layer.cornerRadius = 20
         
-        /*let questionFactory = QuestionFactory()
-         questionFactory.delegate = self
-         self.questionFactory = questionFactory
-         
-         questionFactory.requestNextQuestion()
-         */
-        
         let questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
         self.questionFactory = questionFactory
         
         showLoadingIndicator()
         questionFactory.loadData()
-        
     }
     // MARK: - Private functions
     
@@ -103,7 +95,6 @@ final class MovieQuizViewController: UIViewController {
             show (quiz: viewModel)
             
         } else {
-            
             imageView.layer.borderColor = nil
             imageView.layer.borderWidth = 0
             currentQuestionIndex += 1

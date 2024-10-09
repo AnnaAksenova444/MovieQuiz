@@ -59,22 +59,16 @@ final class QuestionFactory: QuestionFactoryProtocol {
             let index = (0..<self.movies.count).randomElement() ?? 0
             
             guard let movie = self.movies [safe: index] else { return }
-            
             var imageData = Data()
-            
             do {
                 imageData = try Data(contentsOf: movie.resizedImageURL)
             } catch {
                 print("Failed to load image")
             }
             let rating = Float(movie.rating) ?? 0
-            
             let i = ([6,7,8,9].randomElement() ?? 0)
-            
             let text = "Рейтинг этого фильма больше чем \(i)?"
-            
             let correctAnswer = rating > Float(i)
-            
             let question = QuizQuestion(image: imageData,
                                         text: text,
                                         correctAnswer: correctAnswer)
