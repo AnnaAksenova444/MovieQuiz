@@ -75,7 +75,7 @@ extension StatisticService: StatisticServiceProtocol {
         
         gamesCount += 1
         
-        if bestGame.correct < count {
+        if bestGame.correct <= count {
             bestGame.correct = count
             bestGame.total = amount
             bestGame.date = Date()
