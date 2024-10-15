@@ -10,10 +10,7 @@ final class MovieQuizViewController: UIViewController {
     @IBOutlet weak var yesButton: UIButton!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
-    private let currentDate = Date()
-    
     private var alert:AlertPresenterProtocol = AlertPresenter()
-    private var statisticService: StatisticServiceProtocol = StatisticService()
     private var presenter: MovieQuizPresenter!
     
     override func viewDidLoad() {
@@ -23,12 +20,8 @@ final class MovieQuizViewController: UIViewController {
         imageView.layer.cornerRadius = 20
         
         presenter = MovieQuizPresenter(viewController: self)
-        
-        showLoadingIndicator()
-        presenter.questionFactory?.loadData()
-    
     }
-    // MARK: - Private functions
+    // MARK: - Functions
     
     func show(quiz step: QuizStepViewModel) {
         imageView.image = step.image
@@ -41,21 +34,10 @@ final class MovieQuizViewController: UIViewController {
         imageView.layer.borderWidth = 0
     }
     
-    func showAnswerResult(isCorrect: Bool) {
-        if isCorrect {
-            presenter.correctAnswers += 1
-        }
-        
+    func highlightImageBorder(isCorrectAnswer: Bool) {
         imageView.layer.masksToBounds = true
         imageView.layer.borderWidth = 8
-        imageView.layer.cornerRadius = 20
-        imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            guard let self else {return}
-            self.presenter.statisticService = self.statisticService
-            self.presenter.showNextQuestionOrResults()
-        }
+        imageView.layer.borderColor = isCorrectAnswer ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
     }
     
     func showLoadingIndicator() {
@@ -65,7 +47,6 @@ final class MovieQuizViewController: UIViewController {
     
     func hideLoadingIndicator() {
         activityIndicator.isHidden = true
-        activityIndicator.stopAnimating()
     }
     
     func showNetworkError(message: String) {
@@ -78,7 +59,6 @@ final class MovieQuizViewController: UIViewController {
             completion: { [weak self] in
                 guard let self else {return}
                 self.presenter.restartGame()
-                self.presenter.questionFactory?.loadData()
             }
         )
         show(quiz: viewModel)
