@@ -10,8 +10,6 @@ final class MovieQuizViewController: UIViewController {
     @IBOutlet weak var yesButton: UIButton!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
-    private let questionsAmount: Int = 10
-    private var currentQuestionIndex = 0
     private var correctAnswers = 0
     private let currentDate = Date()
     
@@ -19,6 +17,7 @@ final class MovieQuizViewController: UIViewController {
     private var currentQuestion: QuizQuestion?
     private var alert:AlertPresenterProtocol = AlertPresenter()
     private var statisticService: StatisticServiceProtocol = StatisticService()
+    private let presenter = MovieQuizPresenter()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,14 +42,6 @@ final class MovieQuizViewController: UIViewController {
         yesButton.isEnabled = true
     }
     
-    private func convert (model: QuizQuestion) -> QuizStepViewModel{
-        let questionStep = QuizStepViewModel(
-            image: UIImage(data: model.image) ?? UIImage(),
-            question: model.text,
-            questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)")
-        return questionStep
-    }
-    
     private func showAnswerResult(isCorrect: Bool) {
         if isCorrect == true {
             correctAnswers += 1
@@ -70,13 +61,13 @@ final class MovieQuizViewController: UIViewController {
     private func showNextQuestionOrResults() {
         imageView.layer.borderColor = nil
         imageView.layer.borderWidth = 0
-        if currentQuestionIndex == questionsAmount - 1 {
-            let text = correctAnswers == questionsAmount ?
+        if presenter.isLastQuestion() {
+            let text = correctAnswers == presenter.questionsAmount ?
             "Поздравляем, вы ответили на 10 из 10!" :
             "Ваш результат: \(correctAnswers)/10"
             statisticService.store(
                 correct: correctAnswers,
-                totalQuestions: questionsAmount)
+                totalQuestions: presenter.questionsAmount)
             
             let viewModel = AlertModel(
                 title: "Этот раунд окончен!",
@@ -87,7 +78,7 @@ final class MovieQuizViewController: UIViewController {
                 buttonText: "Сыграть ещё раз",
                 completion: { [weak self] in
                     guard let self else {return}
-                    self.currentQuestionIndex = 0
+                    self.presenter.resetQuestionIndex()
                     self.correctAnswers = 0
                     self.questionFactory?.requestNextQuestion()
                 }
@@ -97,7 +88,7 @@ final class MovieQuizViewController: UIViewController {
         } else {
             imageView.layer.borderColor = nil
             imageView.layer.borderWidth = 0
-            currentQuestionIndex += 1
+            presenter.switchToNextQuestion()
             
             questionFactory?.requestNextQuestion()
         }
@@ -122,7 +113,7 @@ final class MovieQuizViewController: UIViewController {
             buttonText: "Попробовать еще раз",
             completion: { [weak self] in
                 guard let self else {return}
-                self.currentQuestionIndex = 0
+                self.presenter.resetQuestionIndex()
                 self.correctAnswers = 0
                 self.questionFactory?.loadData()
             }
@@ -159,7 +150,7 @@ extension MovieQuizViewController: QuestionFactoryDelegate{
     func didReceiveNextQuestion(question: QuizQuestion?) {
         guard let question else {return }
         currentQuestion = question
-        let viewModel = convert(model: question)
+        let viewModel = presenter.convert(model: question)
         
         DispatchQueue.main.async { [weak self] in
             self?.show(quiz: viewModel)
