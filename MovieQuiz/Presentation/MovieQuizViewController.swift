@@ -30,6 +30,8 @@ final class MovieQuizViewController: UIViewController {
         
         showLoadingIndicator()
         questionFactory.loadData()
+        
+        presenter.viewController = self
     }
     // MARK: - Private functions
     
@@ -42,7 +44,7 @@ final class MovieQuizViewController: UIViewController {
         yesButton.isEnabled = true
     }
     
-    private func showAnswerResult(isCorrect: Bool) {
+    func showAnswerResult(isCorrect: Bool) {
         if isCorrect == true {
             correctAnswers += 1
         }
@@ -123,25 +125,17 @@ final class MovieQuizViewController: UIViewController {
     // MARK: - Actions
     
     @IBAction private func noButtonClicked(_ sender: UIButton) {
-        guard let currentQuestion = currentQuestion else {
-            return
-        }
-        let giveAnswer = false
+        presenter.currentQuestion = currentQuestion
+        presenter.noButtonClicked()
         noButton.isEnabled = false
         yesButton.isEnabled = false
-        
-        showAnswerResult(isCorrect: giveAnswer == currentQuestion.correctAnswer)
     }
     
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
-        guard let currentQuestion = currentQuestion else {
-            return
-        }
-        let giveAnswer = true
+        presenter.currentQuestion = currentQuestion
+        presenter.yesButtonClicked()
         yesButton.isEnabled = false
         noButton.isEnabled = false
-        
-        showAnswerResult(isCorrect: giveAnswer == currentQuestion.correctAnswer)
     }
 }
 //MARK: - QuestionFactoryDelegate
