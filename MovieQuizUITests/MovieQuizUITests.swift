@@ -10,7 +10,7 @@ class MovieQuizUITests: XCTestCase {
         
         app = XCUIApplication()
         app.launch()
-    
+        
         continueAfterFailure = false
     }
     

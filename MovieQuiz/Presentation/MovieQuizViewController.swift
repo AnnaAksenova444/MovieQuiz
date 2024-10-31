@@ -13,11 +13,17 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
     private var alert:AlertPresenterProtocol = AlertPresenter()
     private var presenter: MovieQuizPresenter!
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         noButton.layer.cornerRadius = 15
         yesButton.layer.cornerRadius = 15
         imageView.layer.cornerRadius = 20
+        textLabel.text = nil
+        imageView.backgroundColor = .clear
         
         presenter = MovieQuizPresenter(viewController: self)
     }
@@ -47,21 +53,6 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
     
     func hideLoadingIndicator() {
         activityIndicator.isHidden = true
-    }
-    
-    func showNetworkError(message: String) {
-        hideLoadingIndicator()
-        
-        let viewModel = AlertModel(
-            title: "Ошибка",
-            message: message,
-            buttonText: "Попробовать еще раз",
-            completion: { [weak self] in
-                guard let self else {return}
-                self.presenter.restartGame()
-            }
-        )
-        show(quiz: viewModel)
     }
     // MARK: - Actions
     

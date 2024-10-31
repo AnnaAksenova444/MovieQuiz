@@ -53,7 +53,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     }
     
     private func proceedToNextQuestionOrResults() {
-        if self.isLastQuestion() {
+        if isLastQuestion() {
             let text = correctAnswers == self.questionsAmount ?
             "Поздравляем, вы ответили на 10 из 10!" :
             "Ваш результат: \(correctAnswers)/10"
@@ -80,6 +80,21 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
             
             questionFactory?.requestNextQuestion()
         }
+    }
+    
+    private func showNetworkError(message: String) {
+        viewController?.hideLoadingIndicator()
+        
+        let viewModel = AlertModel(
+            title: "Ошибка",
+            message: message,
+            buttonText: "Попробовать еще раз",
+            completion: { [weak self] in
+                guard let self else {return}
+                self.questionFactory?.loadData()
+            }
+        )
+        viewController?.show(quiz: viewModel)
     }
     
     private func didAnswer(isCorrectAnswer: Bool) {
@@ -123,6 +138,6 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     
     func didFailToLoadData(with error: any Error) {
         let message = error.localizedDescription
-        viewController?.showNetworkError(message: message)
+        showNetworkError(message: message)
     }
 }
